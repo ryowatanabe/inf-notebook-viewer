@@ -1,6 +1,6 @@
 # inf-notebook-viewer 設計案
 
-作成日: 2026-10-12。設計段階の提案であり、以下のコマンドやファイルは未実装。
+作成日: 2026-10-12。第1段階（変換・検証・ローカル表示）と第2段階（手動同期・Pagesワークフロー）の実装を追加済み。公開サイトでの確認はPages設定とコードのpush後に行う。ハッシュ付き配信用URL・キャッシュ回復とタスクスケジューラ登録は後続の実装対象。
 
 ## 採用案
 
@@ -113,7 +113,7 @@ inf-notebook-viewer/
 
 初回のみ、viewer用のpublicリポジトリを作成またはforkし、Gitのpush認証を設定する。PythonとGitを用意し、local設定にinf-notebookのパスと楽曲テーブルのパスを指定する。GitHub側ではPagesのSourceをGitHub Actionsに設定する。
 
-想定コマンドは次の通り（未実装）。
+変換・手動同期コマンドは次の通り。
 
 ```powershell
 # ローカル生成・検証。GitHubには送信しない
