@@ -210,6 +210,18 @@ def prepare(records, music_table):
     return files, manifest, warnings
 
 
+def rename_directory(source, destination):
+    # Windows file indexing/virus scans can briefly hold a renamed directory.
+    for attempt in range(5):
+        try:
+            source.rename(destination)
+            return
+        except PermissionError:
+            if attempt == 4:
+                raise
+            time.sleep(0.1 * (attempt + 1))
+
+
 def publish(output, files, manifest):
     """Stage everything first; never merge generated data into an arbitrary folder."""
     old_manifest = None
@@ -244,12 +256,12 @@ def publish(output, files, manifest):
             target.parent.mkdir(parents=True, exist_ok=True)
             target.write_bytes(raw)
         if output.exists():
-            output.rename(backup)
+            rename_directory(output, backup)
         try:
-            staging.rename(output)
+            rename_directory(staging, output)
         except OSError:
             if backup.exists():
-                backup.rename(output)
+                rename_directory(backup, output)
             raise
         if backup.exists():
             shutil.rmtree(backup)
