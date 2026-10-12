@@ -12,8 +12,10 @@
   <header class="topbar"><div><p class="eyebrow">INF-NOTEBOOK VIEWER</p><h1>プレイ記録</h1></div><button id="refresh" class="quiet">データを更新</button></header>
   <main>
     <section class="search-panel" aria-label="楽曲検索">
-      <label for="search">楽曲名</label>
-      <input id="search" type="search" placeholder="曲名の一部を入力" autocomplete="off" spellcheck="false">
+      <div class="search-controls">
+        <div><label for="search">楽曲名</label><input id="search" type="search" placeholder="曲名の一部を入力" autocomplete="off" spellcheck="false"></div>
+        <div><label for="search-mode">検索方法</label><select id="search-mode"><option value="partial">部分一致</option><option value="exact">完全一致</option></select></div>
+      </div>
       <div class="selectors">
         <div><label for="style">プレイスタイル</label><select id="style"><option>SP</option><option>DP</option><option>DP BATTLE</option></select></div>
         <div><label for="difficulty">難易度</label><select id="difficulty"><option value="BEGINNER">B · BEGINNER</option><option value="NORMAL">N · NORMAL</option><option value="HYPER">H · HYPER</option><option value="ANOTHER" selected>A · ANOTHER</option><option value="LEGGENDARIA">L · LEGGENDARIA</option></select></div>

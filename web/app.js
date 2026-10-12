@@ -1,4 +1,4 @@
-import { STYLES, DIFFICULTIES, normalizeSearch, optionText, valueText, playDate, playTime } from './format.js';
+import { STYLES, DIFFICULTIES, normalizeSearch, matchesSearch, optionText, valueText, playDate, playTime, generatedTime } from './format.js';
 
 const $ = id => document.getElementById(id);
 const dataRoot = new URL('../data/', import.meta.url);
@@ -27,18 +27,24 @@ function readSelection() {
   $('style').value = STYLES.includes(style) ? style : 'SP';
   $('difficulty').value = DIFFICULTIES.includes(difficulty) ? difficulty : 'ANOTHER';
   $('search').value = params.get('q') || '';
+  const mode = params.get('match') || stored('search-mode');
+  $('search-mode').value = mode === 'exact' ? 'exact' : 'partial';
+  updateSearchPlaceholder();
   selected = params.get('song');
+}
+function updateSearchPlaceholder() {
+  $('search').placeholder = $('search-mode').value === 'exact' ? '曲名をすべて入力' : '曲名の一部を入力';
 }
 function writeURL(push = true) {
   const url = new URL(location.href);
-  for (const [key, value] of Object.entries({ song: selected, style: $('style').value, difficulty: $('difficulty').value, q: $('search').value })) {
+  for (const [key, value] of Object.entries({ song: selected, style: $('style').value, difficulty: $('difficulty').value, q: $('search').value, match: $('search-mode').value })) {
     if (value) url.searchParams.set(key, value); else url.searchParams.delete(key);
   }
   if (url.href !== location.href) history[push ? 'pushState' : 'replaceState']({}, '', url);
 }
 function renderResults() {
   const needle = normalizeSearch($('search').value.trim());
-  const matching = songs.filter(song => song.search.includes(needle));
+  const matching = songs.filter(song => matchesSearch(song.search, needle, $('search-mode').value));
   $('result-count').textContent = `${matching.length.toLocaleString()}曲`;
   $('results').replaceChildren();
   const fragment = document.createDocumentFragment();
@@ -131,7 +137,7 @@ async function loadData() {
     const index = await getJSON(manifest.index);
     if (!Array.isArray(index.songs)) throw new Error('検索一覧が不正です');
     songs = index.songs.map(song => ({ ...song, search: normalizeSearch(song.title) }));
-    const date = new Date(manifest.generatedAt).toLocaleString('ja-JP');
+    const date = generatedTime(manifest.generatedAt);
     $('dataset-info').textContent = `データ生成: ${date}\n最新プレイ: ${playTime(manifest.latestPlay)}`;
     setStatus(''); renderResults(); await showDetail();
   } catch {
@@ -141,6 +147,10 @@ async function loadData() {
   } finally { $('refresh').disabled = false; }
 }
 $('search').addEventListener('input', () => { resultLimit = 50; writeURL(false); renderResults(); });
+$('search-mode').addEventListener('change', () => {
+  persist('search-mode', $('search-mode').value); updateSearchPlaceholder();
+  resultLimit = 50; writeURL(); renderResults();
+});
 for (const key of ['style', 'difficulty']) $(key).addEventListener('change', () => {
   persist(key, $(key).value); historyLimit = 50; writeURL(); renderResults(); showDetail();
 });

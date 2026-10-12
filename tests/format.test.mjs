@@ -2,7 +2,19 @@ import { readFile } from 'node:fs/promises';
 import assert from 'node:assert/strict';
 import { test } from 'node:test';
 const source = await readFile(new URL('../web/format.js', import.meta.url), 'utf8');
-const { normalizeSearch, optionText, valueText } = await import(`data:text/javascript;base64,${Buffer.from(source).toString('base64')}`);
+const { normalizeSearch, matchesSearch, optionText, valueText } = await import(`data:text/javascript;base64,${Buffer.from(source).toString('base64')}`);
+
+test('exact search excludes longer titles while preserving normalization and empty queries', () => {
+  const match = (title, query, mode) => matchesSearch(normalizeSearch(title), normalizeSearch(query.trim()), mode);
+  assert.equal(match('A', 'A', 'exact'), true);
+  assert.equal(match('AA', 'A', 'exact'), false);
+  assert.equal(match('AA', 'A', 'partial'), true);
+  assert.equal(match('ＣＡＦÉ', ' cafe ', 'exact'), true);
+  assert.equal(match('ガラス', 'がらす', 'exact'), true);
+  assert.equal(match('ガラス', 'からす', 'exact'), false);
+  assert.equal(match('A', '', 'exact'), true);
+  assert.equal(match('A', '  ', 'partial'), true);
+});
 test('case, width, kana and Latin accents are normalized, dakuten stays significant', () => {
   assert.equal(normalizeSearch('ＣＡＦÉ'), normalizeSearch('cafe'));
   assert.equal(normalizeSearch('ｶﾞラス'), normalizeSearch('がらす'));
