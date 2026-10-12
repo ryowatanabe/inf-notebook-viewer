@@ -39,6 +39,9 @@
   .results-panel:has(.song-button[aria-pressed=true]) #results{max-height:220px;overflow-y:auto}
 }
 
+.search-controls{display:grid;grid-template-columns:minmax(0,1fr) 124px;gap:10px;align-items:end}
+.search-controls>div{min-width:0}
+
 /* On phones, reserve two rows instead of wrapping the three groups separately. */
 @container(max-width:411px){
   .history-row{display:grid;grid-template-columns:234px minmax(0,1fr)}
