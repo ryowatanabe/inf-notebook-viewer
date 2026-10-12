@@ -1,4 +1,4 @@
-import { STYLES, DIFFICULTIES, normalizeSearch, matchesSearch, optionText, valueText, playDate, playTime } from './format.js';
+import { STYLES, DIFFICULTIES, normalizeSearch, matchesSearch, optionText, valueText, playDate, playTime, generatedTime } from './format.js';
 
 const $ = id => document.getElementById(id);
 const dataRoot = new URL('../data/', import.meta.url);
@@ -137,7 +137,7 @@ async function loadData() {
     const index = await getJSON(manifest.index);
     if (!Array.isArray(index.songs)) throw new Error('検索一覧が不正です');
     songs = index.songs.map(song => ({ ...song, search: normalizeSearch(song.title) }));
-    const date = new Date(manifest.generatedAt).toLocaleString('ja-JP');
+    const date = generatedTime(manifest.generatedAt);
     $('dataset-info').textContent = `データ生成: ${date}\n最新プレイ: ${playTime(manifest.latestPlay)}`;
     setStatus(''); renderResults(); await showDetail();
   } catch {

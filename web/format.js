@@ -35,3 +35,9 @@ export function playDate(ts) {
 export function playTime(ts) {
   return ts ? `${playDate(ts)} ${ts.slice(9, 11)}:${ts.slice(11, 13)}` : '不明';
 }
+
+export function generatedTime(timestamp) {
+  const date = new Date(timestamp);
+  const pad = value => String(value).padStart(2, '0');
+  return `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())} ${pad(date.getHours())}:${pad(date.getMinutes())}`;
+}

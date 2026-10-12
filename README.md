@@ -91,6 +91,16 @@ mainの保護ルールは次の設定を推奨します。
 
 自動マージは保護ルールを回避しません。他者の承認を必須にした場合、データ更新PRも承認されるまで待機します。`build`が候補に出ない場合は、既存のワークフローを実行してチェックを作成してから設定してください。
 
+コードやドキュメントの改修も、変更を始める前に作業ブランチを作成し、そのブランチでコミットしてください。mainへの直接コミット・pushは行わず、PRと`build`チェックを経てマージします。エージェント向けの作業指示は[AGENTS.md](AGENTS.md)に記載しています。
+
+```powershell
+git switch main
+git pull --ff-only
+git switch -c codex/your-change
+```
+
+既に作業ブランチで改修中の場合は、そのブランチで作業を続けてください。
+
 ### 5. GitHub Pagesを有効にする
 
 **Settings → Pages → Build and deployment → Source**を**GitHub Actions**に設定します。forkの場合は自分の記録へ置き換えてから有効にしてください。
