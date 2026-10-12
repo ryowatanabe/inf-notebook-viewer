@@ -12,7 +12,8 @@ flowchart LR
   M[PC: 楽曲テーブル] --> E
   E --> J[閲覧用JSON]
   J --> S[viewerの同期コマンド]
-  S --> G[GitHub publicリポジトリ]
+  S --> U[更新ブランチとPR]
+  U --> G[検証成功後にmainへマージ]
   G --> A[GitHub Actionsで検証・サイト構成]
   A --> P[GitHub Pages]
   P --> B[iOS Safari / Android Chrome]
@@ -58,7 +59,8 @@ flowchart LR
 inf-notebook-viewer/
   web/                       HTML、CSS、JavaScript
   tools/export_records.py    読み取り・正規化・検証・JSON生成
-  tools/sync.ps1             生成とGit同期
+  tools/sync.ps1             同期コマンドのPowerShell入口
+  tools/sync_records.py      データ更新PRの作成・自動マージ予約
   tools/build_site.py         配信用ファイルとハッシュ付きURLの生成
   data/index.json            検索一覧・譜面の有無・レベル
   data/songs/<song-id>.json   楽曲単位の全スタイル・全難易度の履歴
@@ -123,11 +125,11 @@ python tools/export_records.py --config config.local.json
 pwsh -File tools/sync.ps1
 ```
 
-同期コマンドは生成前にブランチと作業状態を検査する。無関係な未コミット変更がある場合は停止し、`git add .`を使わず生成データだけを対象にする。同期用の専用checkoutを推奨し、開発中のcheckoutと分ける。
+同期コマンドはmainの作業状態を検査し、未コミット・未送信の変更があれば停止する。生成データは同期専用worktreeの更新ブランチへコミット・pushし、main向けPRを作成して自動マージを予約する。mainへ直接pushしない。PC側にGitHub CLIと認証済みアカウントを用意する。
 
 remoteの更新はfast-forwardで取り込む。履歴が分岐した場合は停止して案内し、force pushや自動的な変更破棄は行わない。push前のデータに差分がなければ新しいcommitを作らない。取得・公開日時だけの変更で毎回差分を発生させない。
 
-生成後に通信が失敗しても、生成データと未送信commitを残す。次回は未送信commitのpushも確認し、「データ差分なし」を理由に送信を飛ばさない。push成功とPages公開成功は別の状態として表示し、手動実行時は公開状況へのリンクを返す。
+生成後に通信が失敗しても、更新ブランチとcommitを残す。次回は新たなデータ差分がなくてもpush・PR作成・自動マージ予約を再試行する。更新待ちのPRは再利用し、マージ済みなら新しい更新PRを作成する。PR差分がdataだけであることをローカルとCIで検証する。mainはPRとbuild成功を必須とし、他者レビューを必須にしなければデータ更新を自動マージできる。PR送信・マージ・Pages公開の完了は別の状態として扱う。
 
 ## GitHub Actionsとキャッシュ
 

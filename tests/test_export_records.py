@@ -3,9 +3,10 @@ from pathlib import Path
 import sys
 import tempfile
 import unittest
+from unittest.mock import patch
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "tools"))
-from export_records import ExportError, export, normalize_chart, prepare, publish
+from export_records import ExportError, export, normalize_chart, prepare, publish, rename_directory
 from validate_data import validate_data
 
 
@@ -14,6 +15,22 @@ def temporary_directory():
 
 
 class ExportTests(unittest.TestCase):
+    def test_transient_windows_directory_lock_is_retried(self):
+        with temporary_directory() as directory:
+            root = Path(directory); source = root / "source"; source.mkdir()
+            destination = root / "destination"
+            original = Path.rename
+            calls = []
+            def locked_once(path, target):
+                calls.append(path)
+                if len(calls) == 1:
+                    raise PermissionError("Transient file indexing lock")
+                return original(path, target)
+            with patch.object(Path, "rename", autospec=True, side_effect=locked_once), patch("export_records.time.sleep"):
+                rename_directory(source, destination)
+            self.assertEqual(len(calls), 2)
+            self.assertTrue(destination.is_dir())
+
     def test_preserves_best_outside_history_and_zero_bp(self):
         source = {"timestamps": ["20260101-120000"], "history": {
             "20260101-120000": {"score": {"value": 100}, "miss_count": {"value": 0}}},
