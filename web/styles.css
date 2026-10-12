@@ -2,3 +2,46 @@
 *{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);line-height:1.5}button,input,select{font:inherit;color:inherit}button{cursor:pointer;border:1px solid var(--border);border-radius:9px;background:#222d42;padding:10px 14px;min-height:44px}button:hover{border-color:var(--accent)}button:disabled{opacity:.5;cursor:wait}button:focus-visible,input:focus-visible,select:focus-visible{outline:2px solid var(--accent);outline-offset:3px}[hidden]{display:none!important}.topbar,main,footer{max-width:1100px;margin:auto}.topbar{display:flex;align-items:center;justify-content:space-between;gap:16px;padding:28px 24px 20px}.eyebrow{font-size:11px;letter-spacing:.14em;color:var(--accent);margin:0 0 4px}h1{font-size:26px;margin:0;letter-spacing:.04em}h2{font-size:16px;margin:0}.quiet{background:transparent;font-size:13px;white-space:nowrap}main{padding:0 24px}.search-panel,.results-panel,.detail-panel{background:var(--panel);border:1px solid var(--border);border-radius:14px;padding:20px}.search-panel label{display:block;font-size:12px;font-weight:600;color:var(--muted);margin-bottom:6px}input,select{width:100%;background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:12px;min-height:46px}input{font-size:16px}input::placeholder{color:#8795ad}.selectors{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:14px}.muted{color:var(--muted);font-size:12px}#dataset-info{margin:14px 0 0;white-space:pre-line}#status{font-size:13px;margin:8px 0 0;color:var(--accent)}#status:empty{display:none}.workspace{display:grid;grid-template-columns:minmax(240px,1fr) minmax(0,2fr);gap:18px;margin-top:18px;align-items:start}.section-heading{display:flex;justify-content:space-between;gap:8px;align-items:center;margin-bottom:12px}#results{list-style:none;margin:0;padding:0}#results li+li{margin-top:6px}.song-button{display:flex;align-items:center;justify-content:space-between;gap:12px;text-align:left;width:100%;background:transparent;padding:12px;border-color:transparent}.song-title{overflow-wrap:anywhere}.song-tag{font-size:11px;flex-shrink:0;color:var(--muted)}.song-button[aria-pressed=true]{background:#27384a;border-color:#638b81}.song-button[aria-pressed=true] .song-title{color:var(--accent)}#more-results{width:100%;margin-top:12px}.empty{color:var(--muted);text-align:center;padding:30px 0;font-size:14px}.detail-title{font-size:22px;overflow-wrap:anywhere;line-height:1.4;margin:4px 0 18px}.chart-label{color:var(--accent);font-size:12px;letter-spacing:.05em;margin:0}.bests{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:24px}.best-card{background:var(--bg);border:1px solid var(--border);border-radius:10px;padding:14px}.best-label{font-size:12px;color:var(--muted);margin:0}.best-value{font-size:28px;font-weight:650;margin:4px 0;font-variant-numeric:tabular-nums}.option-text{font-size:13px;margin:4px 0 0;overflow-wrap:anywhere;color:var(--accent)}.history-list{list-style:none;padding:0;margin:12px 0}.history-row{border-top:1px solid var(--border);padding:13px 0}.row-meta{display:flex;align-items:center;flex-wrap:wrap;gap:8px;font-size:12px;color:var(--muted)}.lamp{display:inline-block;border:1px solid #526079;border-radius:4px;padding:2px 5px;color:var(--text);font-size:10px}.lamp[data-lamp="FAILED"]{color:#f0a0a0;border-color:#8e5858}.lamp[data-lamp="A-CLEAR"],.lamp[data-lamp="E-CLEAR"]{color:#a4d8b0;border-color:#598269}.lamp[data-lamp="CLEAR"]{color:#acd6ff;border-color:#597ca3}.lamp[data-lamp="H-CLEAR"]{color:#fff;border-color:#c0c6d0}.lamp[data-lamp="EXH-CLEAR"]{color:#f0d6a1;border-color:#a88d57}.lamp[data-lamp="F-COMBO"]{color:#e5b4ff;border-color:#a171bc}.row-values{display:flex;flex-wrap:wrap;gap:18px;margin:8px 0;font-variant-numeric:tabular-nums;font-size:18px}.row-values span small{font-size:10px;color:var(--muted);margin-right:4px}.rank{font-weight:650;color:#ead7a8}.history-more{width:100%}footer{padding:24px;text-align:center;font-size:11px;color:var(--muted)}.error{color:#f0a0a0}.retry{margin-top:10px}
 @media(max-width:700px){.topbar{padding:20px 16px 16px}main{padding:0 12px}.search-panel,.results-panel,.detail-panel{padding:16px}.workspace{grid-template-columns:1fr;gap:12px;margin-top:12px}h1{font-size:23px}.detail-title{font-size:20px}.results-panel:has(.song-button[aria-pressed=true]) #results{max-height:220px;overflow-y:auto}.bests{gap:8px}.best-card{padding:12px}.best-value{font-size:26px}.selectors{gap:10px}select{font-size:14px}.detail-panel{scroll-margin-top:12px}.row-values{gap:14px}}
 @media(prefers-reduced-motion:no-preference){button{transition:background .15s,border-color .15s}}
+
+/* Use the available desktop width for records instead of leaving wide gutters. */
+.topbar,main,footer{max-width:1600px}
+.workspace{grid-template-columns:minmax(220px,280px) minmax(0,1fr)}
+.detail-panel{container-type:inline-size}
+
+/* Keep one line when the actual content fits; move options to a second line. */
+.history-list{overflow-x:visible}
+.history-row{
+  display:flex;
+  flex-wrap:wrap;
+  align-items:center;
+  gap:6px 10px;
+  padding:10px 0;
+  min-width:0;
+}
+.row-meta{display:grid;grid-template-columns:82px 16px 28px;gap:6px;white-space:nowrap;flex:0 0 138px;align-items:center}
+.lamp{width:16px;height:12px;padding:0;border:1px solid #8490a5;border-radius:2px;background:#526079;font-size:0;line-height:0;overflow:hidden}
+.lamp[data-lamp="FAILED"]{background:#ff2828;border-color:#ff7373}
+.lamp[data-lamp="A-CLEAR"]{background:#ff66ff;border-color:#ff99ff}
+.lamp[data-lamp="E-CLEAR"]{background:#22ff22;border-color:#8aff8a}
+.lamp[data-lamp="CLEAR"]{background:#22ccff;border-color:#87e4ff}
+.lamp[data-lamp="H-CLEAR"]{background:#ffffff;border-color:#ffffff}
+.lamp[data-lamp="EXH-CLEAR"]{background:linear-gradient(90deg,#ff2828 50%,#ffff28 50%);border-color:#ffb35c}
+.lamp[data-lamp="F-COMBO"]{background:linear-gradient(90deg,#ff2828,#d5ff28,#28ff7e,#2872ff,#d528ff);border-color:#d8c5ff}
+.row-values{display:grid;grid-template-columns:72px 40px 70px;gap:36px;margin:0;font-size:14px;white-space:nowrap;flex:0 0 254px}
+.row-values>span{display:grid;grid-template-columns:max-content minmax(0,1fr);align-items:baseline;column-gap:2px;text-align:right}
+.row-values>span small{margin-right:0;text-align:left}
+.row-values .history-value{min-width:0;text-align:right;font-variant-numeric:tabular-nums}
+.history-row>.option-text{margin:0;white-space:normal;overflow-wrap:anywhere;flex:1 1 auto;min-width:0;max-width:100%}
+
+/* Below this width, let history use the full window instead of a narrow column. */
+@media(max-width:1100px){
+  .workspace{grid-template-columns:minmax(0,1fr)}
+  .results-panel:has(.song-button[aria-pressed=true]) #results{max-height:220px;overflow-y:auto}
+}
+
+/* On phones, reserve two rows instead of wrapping the three groups separately. */
+@container(max-width:411px){
+  .history-row{display:grid;grid-template-columns:234px minmax(0,1fr)}
+  .history-row>.row-meta{grid-column:1/-1}
+  .row-values{grid-template-columns:68px 36px 66px;gap:32px;font-size:13px;flex-basis:234px}
+}

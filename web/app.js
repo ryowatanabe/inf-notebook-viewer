@@ -82,11 +82,17 @@ function drawChart(song) {
     const date = el('time', playDate(row.timestamp));
     date.dateTime = `${playDate(row.timestamp)}T${row.timestamp.slice(9, 11)}:${row.timestamp.slice(11, 13)}:${row.timestamp.slice(13, 15)}`;
     date.title = playTime(row.timestamp);
-    const lamp = el('span', valueText(row.clearType), 'lamp'); lamp.dataset.lamp = row.clearType ?? '';
+    const lamp = el('span', null, 'lamp');
+    lamp.dataset.lamp = row.clearType ?? '';
+    lamp.title = valueText(row.clearType);
+    lamp.setAttribute('role', 'img');
+    lamp.setAttribute('aria-label', `クリアランプ: ${valueText(row.clearType)}`);
     meta.append(date, lamp, el('span', valueText(row.djLevel), 'rank'));
     const values = el('div', null, 'row-values');
     for (const [label, value] of [['SCORE', valueText(row.score)], ['BP', valueText(row.missCount)], ['SPEED', row.playSpeed == null ? '—' : `x${row.playSpeed}`]]) {
-      const span = el('span'); span.append(el('small', label), document.createTextNode(value)); values.append(span);
+      const span = el('span');
+      span.append(el('small', label), el('span', value, 'history-value'));
+      values.append(span);
     }
     li.append(meta, values, el('p', optionText(row.options), 'option-text')); list.append(li);
   }
